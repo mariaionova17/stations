@@ -1,4 +1,4 @@
-package cz.example.stations
+package cz.example.stations.data.model
 
 data class Station(
     val id: String,

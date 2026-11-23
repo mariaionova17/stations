@@ -1,5 +1,6 @@
-package cz.example.stations
+package cz.example.stations.data.remote
 
+import cz.example.stations.data.model.Station
 import retrofit2.http.GET
 
 interface StationsApi {
