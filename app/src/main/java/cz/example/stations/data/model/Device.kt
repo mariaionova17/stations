@@ -5,5 +5,5 @@ data class Device (
     val type: String,
     val name: String,
     val status: String,
-    val lastSeen: String?,
+    val lastSeen: String?
 )

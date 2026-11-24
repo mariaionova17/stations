@@ -5,5 +5,5 @@ data class Station(
     val name: String,
     val address: String,
     val country: String,
-    val deviceCount: Int,
+    val deviceCount: Int
 )
