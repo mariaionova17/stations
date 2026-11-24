@@ -7,11 +7,12 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cz.example.stations.data.model.Station
-import cz.example.stations.data.remote.RetrofitClient
+import cz.example.stations.data.repository.StationRepository
 import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
 
 class StationsViewModel : ViewModel() {
+    private val repository = StationRepository()
     var stations by mutableStateOf(emptyList<Station>())
         private set
 
@@ -22,7 +23,7 @@ class StationsViewModel : ViewModel() {
     fun loadStations(){
         viewModelScope.launch() {
             try {
-                stations = RetrofitClient.api.getStations()
+                stations = repository.getStations()
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
