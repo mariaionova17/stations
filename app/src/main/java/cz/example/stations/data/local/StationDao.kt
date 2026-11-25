@@ -13,4 +13,8 @@ interface StationDao {
 
     @Upsert
     suspend fun upsertStations(stations: List<StationEntity>)
+
+    @Query("DELETE FROM stations")
+    suspend fun deleteAllStations()
+
 }

@@ -1,5 +1,6 @@
 package cz.example.stations.data.repository
 
+import androidx.room.withTransaction
 import cz.example.stations.data.local.AppDatabase
 import cz.example.stations.data.local.toEntity
 import cz.example.stations.data.local.toModel
@@ -18,17 +19,24 @@ class StationRepository(
     suspend fun getStations() {
         val stations = api.getStations()
 
-        database.stationDao().upsertStations(
-            stations.map { it.toEntity() }
-        )
+        database.withTransaction {
+            database.stationDao().deleteAllStations()
+            database.stationDao().upsertStations(
+                stations.map { it.toEntity() }
+            )
+            database.deviceDao().deleteOrphanDevices()
+        }
     }
 
     suspend fun getDevices(stationId: String) {
         val devices = api.getDevices(stationId)
 
-        database.deviceDao().upsertDevices(
-            devices.map { it.toEntity(stationId) }
-        )
+        database.withTransaction {
+            database.deviceDao().deleteDevices(stationId)
+            database.deviceDao().upsertDevices(
+                devices.map { it.toEntity(stationId) }
+            )
+        }
     }
     fun observeStations(): Flow<List<Station>> {
         return database.stationDao().getStations().map { entities ->
