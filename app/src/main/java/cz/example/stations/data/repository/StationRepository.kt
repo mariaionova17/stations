@@ -15,40 +15,20 @@ class StationRepository(
     private val api: StationsApi,
     private val database: AppDatabase,
 ) {
-    suspend fun getStations(): List<Station> {
-        return try {
-            val stations = api.getStations()
+    suspend fun getStations() {
+        val stations = api.getStations()
 
-            database.stationDao().upsertStations(
-                stations.map { it.toEntity() }
-            )
-
-            stations
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            database.stationDao().getStations()
-                .first()
-                .map { it.toModel() }
-        }
+        database.stationDao().upsertStations(
+            stations.map { it.toEntity() }
+        )
     }
 
-    suspend fun getDevices(stationId: String): List<Device> {
-        return try {
-            val devices = api.getDevices(stationId)
+    suspend fun getDevices(stationId: String) {
+        val devices = api.getDevices(stationId)
 
-            database.deviceDao().upsertDevices(
-                devices.map { it.toEntity(stationId) }
-            )
-
-            devices
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            database.deviceDao().getDevices(stationId)
-                .first()
-                .map { it.toModel() }
-        }
+        database.deviceDao().upsertDevices(
+            devices.map { it.toEntity(stationId) }
+        )
     }
     fun observeStations(): Flow<List<Station>> {
         return database.stationDao().getStations().map { entities ->

@@ -17,6 +17,12 @@ class StationsViewModel(application: Application) : AndroidViewModel(application
     var stations by mutableStateOf(emptyList<Station>())
         private set
 
+    var isLoading by mutableStateOf(true)
+        private set
+
+    var error by mutableStateOf<String?>(null)
+        private set
+
     init {
         viewModelScope.launch {
             repository.observeStations().collect {
@@ -28,12 +34,17 @@ class StationsViewModel(application: Application) : AndroidViewModel(application
 
     fun loadStations(){
         viewModelScope.launch() {
+            isLoading = true
+            error = null
             try {
-                stations = repository.getStations()
+                repository.getStations()
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
+                error = "Failed to refresh stations"
                 Log.e("StationsAPI", "Failed to load stations", e)
+            } finally {
+                isLoading = false
             }
         }
     }

@@ -13,6 +13,9 @@ import cz.example.stations.data.model.Device
 fun StationDetailScreen(
     stationId: String,
     devices: List<Device>,
+    isLoading: Boolean,
+    error: String?,
+    onRetry: () -> Unit,
     onBack: () -> Unit
 ) {
     Column(
@@ -34,6 +37,30 @@ fun StationDetailScreen(
         Text("Station ID: $stationId")
 
         Spacer(modifier = Modifier.height(16.dp))
+
+        if (isLoading) {
+            LinearProgressIndicator(
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+
+        if (error != null) {
+            Text(
+                text = if (devices.isEmpty()) {
+                    "Failed to load devices"
+                } else {
+                    "Couldn't refresh devices. Showing cached data."
+                }
+            )
+
+            TextButton(onClick = onRetry) {
+                Text("Retry")
+            }
+        }
+
+        if (!isLoading && error == null && devices.isEmpty()) {
+            Text("No devices found")
+        }
 
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(12.dp)

@@ -39,7 +39,10 @@ class MainActivity : ComponentActivity() {
                                 stations = stationsViewModel.stations,
                                 onStationClick = { station ->
                                     navController.navigate("details/${station.id}")
-                                }
+                                },
+                                isLoading = stationsViewModel.isLoading,
+                                error = stationsViewModel.error,
+                                onRetry = { stationsViewModel.loadStations() }
                             )
                         }
 
@@ -59,6 +62,9 @@ class MainActivity : ComponentActivity() {
                             StationDetailScreen(
                                 stationId = stationId,
                                 devices = viewModel.devices,
+                                isLoading = viewModel.isLoading,
+                                error = viewModel.error,
+                                onRetry = { viewModel.loadDevices(stationId) },
                                 onBack = { navController.popBackStack() }
                             )
                         }

@@ -14,25 +14,54 @@ import cz.example.stations.data.model.Station
 fun StationsScreen(
     stations: List<Station>,
     onStationClick: (Station) -> Unit,
+    isLoading: Boolean,
+    error: String?,
+    onRetry: () -> Unit,
     modifier: Modifier = Modifier
 ){
-    LazyColumn(
-        modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        item {
-            Text(
-                text = "Stations",
-                style = MaterialTheme.typography.headlineMedium
+    Column(modifier = modifier.fillMaxSize()) {
+
+        if (isLoading) {
+            LinearProgressIndicator(
+                modifier = Modifier.fillMaxWidth()
             )
         }
 
-        items(stations, key = { it.id }) { station ->
-            StationCard(
-                station,
-                onClick = { onStationClick(station) }
+        if (error != null) {
+            Text(
+                text = if (stations.isEmpty()) {
+                    "Failed to load stations"
+                } else {
+                    "Couldn't refresh stations. Showing cached data."
+                }
             )
+
+            TextButton(onClick = onRetry) {
+                Text("Retry")
+            }
+        }
+
+        if (!isLoading && error == null && stations.isEmpty()) {
+            Text("No stations found")
+        }
+        LazyColumn(
+            modifier = modifier.fillMaxSize(),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            item {
+                Text(
+                    text = "Stations",
+                    style = MaterialTheme.typography.headlineMedium
+                )
+            }
+
+            items(stations, key = { it.id }) { station ->
+                StationCard(
+                    station,
+                    onClick = { onStationClick(station) }
+                )
+            }
         }
     }
 }

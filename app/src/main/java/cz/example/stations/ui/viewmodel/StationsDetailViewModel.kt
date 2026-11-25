@@ -18,10 +18,16 @@ class StationsDetailViewModel(application: Application) : AndroidViewModel(appli
     var devices by mutableStateOf(emptyList<Device>())
         private set
 
+    var isLoading by mutableStateOf(true)
+        private set
+
+    var error by mutableStateOf<String?>(null)
+        private set
     private var observationJob: Job? = null
 
     fun loadDevices(stationId: String){
         observationJob?.cancel()
+        devices = emptyList()
 
         observationJob = viewModelScope.launch {
             repository.observeDevices(stationId).collect {
@@ -29,13 +35,18 @@ class StationsDetailViewModel(application: Application) : AndroidViewModel(appli
             }
         }
         viewModelScope.launch() {
-            devices = emptyList()
+            isLoading = true
+            error = null
+
             try {
-                devices = repository.getDevices(stationId)
+                repository.getDevices(stationId)
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
+                error = "Failed to refresh devices"
                 Log.e("DevicesAPI", "Failed to load devices", e)
+            } finally {
+                isLoading = false
             }
         }
     }
