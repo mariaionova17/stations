@@ -6,7 +6,9 @@ import cz.example.stations.data.local.toModel
 import cz.example.stations.data.model.Device
 import cz.example.stations.data.model.Station
 import cz.example.stations.data.remote.StationsApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlin.coroutines.cancellation.CancellationException
 
 class StationRepository(
@@ -46,6 +48,16 @@ class StationRepository(
             database.deviceDao().getDevices(stationId)
                 .first()
                 .map { it.toModel() }
+        }
+    }
+    fun observeStations(): Flow<List<Station>> {
+        return database.stationDao().getStations().map { entities ->
+            entities.map { it.toModel() }
+        }
+    }
+    fun observeDevices(stationId: String): Flow<List<Device>> {
+        return database.deviceDao().getDevices(stationId).map { entities ->
+            entities.map { it.toModel() }
         }
     }
 }

@@ -18,6 +18,11 @@ class StationsViewModel(application: Application) : AndroidViewModel(application
         private set
 
     init {
+        viewModelScope.launch {
+            repository.observeStations().collect {
+                stations = it
+            }
+        }
         loadStations()
     }
 

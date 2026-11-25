@@ -9,6 +9,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import cz.example.stations.StationsApplication
 import cz.example.stations.data.model.Device
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlin.coroutines.cancellation.CancellationException
 
@@ -17,7 +18,16 @@ class StationsDetailViewModel(application: Application) : AndroidViewModel(appli
     var devices by mutableStateOf(emptyList<Device>())
         private set
 
+    private var observationJob: Job? = null
+
     fun loadDevices(stationId: String){
+        observationJob?.cancel()
+
+        observationJob = viewModelScope.launch {
+            repository.observeDevices(stationId).collect {
+                devices = it
+            }
+        }
         viewModelScope.launch() {
             devices = emptyList()
             try {
