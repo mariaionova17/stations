@@ -34,7 +34,7 @@ class StationsDetailViewModel(application: Application) : AndroidViewModel(appli
                 devices = it
             }
         }
-        viewModelScope.launch() {
+        viewModelScope.launch {
             isLoading = true
             error = null
 

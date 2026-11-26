@@ -33,7 +33,7 @@ class StationsViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun loadStations(){
-        viewModelScope.launch() {
+        viewModelScope.launch {
             isLoading = true
             error = null
             try {

@@ -1,6 +1,5 @@
 package cz.example.stations.data.remote
 
-import cz.example.stations.data.remote.StationsApi
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 

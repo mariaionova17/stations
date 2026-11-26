@@ -8,9 +8,7 @@ import cz.example.stations.data.model.Device
 import cz.example.stations.data.model.Station
 import cz.example.stations.data.remote.StationsApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlin.coroutines.cancellation.CancellationException
 
 class StationRepository(
     private val api: StationsApi,

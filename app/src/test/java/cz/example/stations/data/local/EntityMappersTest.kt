@@ -3,7 +3,6 @@ package cz.example.stations.data.local
 import cz.example.stations.data.model.Device
 import cz.example.stations.data.model.Station
 import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertNull
 import org.junit.Test
 
 class EntityMappersTest {
