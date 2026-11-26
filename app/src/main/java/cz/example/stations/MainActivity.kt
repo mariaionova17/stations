@@ -51,6 +51,9 @@ class MainActivity : ComponentActivity() {
                                 ?.getString("stationId")
                                 .orEmpty()
 
+                            val station = stationsViewModel.stations
+                                .find { it.id == stationId }
+
                             val viewModel = ViewModelProvider(backStackEntry)[
                                 StationsDetailViewModel::class.java
                             ]
@@ -60,7 +63,8 @@ class MainActivity : ComponentActivity() {
                             }
 
                             StationDetailScreen(
-                                stationId = stationId,
+                                stationName = station?.name ?: "Unknown station",
+                                stationAddress = station?.address.orEmpty(),
                                 devices = viewModel.devices,
                                 isLoading = viewModel.isLoading,
                                 error = viewModel.error,

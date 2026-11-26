@@ -1,14 +1,20 @@
 package cz.example.stations.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cz.example.stations.data.model.Station
+import cz.example.stations.ui.components.ErrorBanner
 
 @Composable
 fun StationsScreen(
@@ -21,6 +27,19 @@ fun StationsScreen(
 ){
     Column(modifier = modifier.fillMaxSize()) {
 
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = 56.dp)
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Stations",
+                style = MaterialTheme.typography.titleLarge
+            )
+        }
+
         if (isLoading) {
             LinearProgressIndicator(
                 modifier = Modifier.fillMaxWidth()
@@ -28,17 +47,14 @@ fun StationsScreen(
         }
 
         if (error != null) {
-            Text(
-                text = if (stations.isEmpty()) {
+            ErrorBanner(
+                message = if (stations.isEmpty()) {
                     "Failed to load stations"
                 } else {
-                    "Couldn't refresh stations. Showing cached data."
-                }
+                    "Couldn't refresh stations"
+                },
+                onRetry = onRetry
             )
-
-            TextButton(onClick = onRetry) {
-                Text("Retry")
-            }
         }
 
         if (!isLoading && error == null && stations.isEmpty()) {
@@ -49,13 +65,6 @@ fun StationsScreen(
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            item {
-                Text(
-                    text = "Stations",
-                    style = MaterialTheme.typography.headlineMedium
-                )
-            }
-
             items(stations, key = { it.id }) { station ->
                 StationCard(
                     station,
